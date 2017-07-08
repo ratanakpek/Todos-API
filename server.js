@@ -1,34 +1,16 @@
 var express = require('express');
 var bodyParser= require('body-parser');
 var app = express();
-var PORT = process.env.PORT || 3000;
+var PORT = process.env.PORT || 3333;
 
 var _=require('underscore');
-
 var todos=[];
 var todoNextId=1;
-
-// var todos = [{
-//     id: 1,
-//     desctription: 'How to be rich',
-//     completed: false
-// }, {
-//     id: 2,
-//     desctription: "How to be a king!",
-//     completed: true
-// }]
-//
-//
-// var data = [{
-//     id: 1,
-//     name: 'RatanakPek',
-//     school: 'HRD'
-// }]
 
 
 app.use(bodyParser.json());
 
-app.get('/', function (req, res) {
+app.get('/getdata', function (req, res) {
     res.send('Todo API Root!')
 });
 
@@ -38,15 +20,6 @@ app.get('/todos', function (req, res) {
 
 app.get('/todos/:id', function (req, res) {
     var todoId = parseInt(req.params.id, 10);
-    // var match;
-    //
-    // todos.forEach(function (todo) {
-    //     if (id === todo.id) {
-    //         match=todo;
-    //
-    //     }
-    // });
-
 
     //underscore
     var matchedTodo=_.findWhere(todos, {id:todoId});
