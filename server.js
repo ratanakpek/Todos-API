@@ -8,22 +8,7 @@ var _=require('underscore');
 var todos=[];
 var todoNextId=1;
 
-// var todos = [{
-//     id: 1,
-//     desctription: 'How to be rich',
-//     completed: false
-// }, {
-//     id: 2,
-//     desctription: "How to be a king!",
-//     completed: true
-// }]
-//
-//
-// var data = [{
-//     id: 1,
-//     name: 'RatanakPek',
-//     school: 'HRD'
-// }]
+
 
 
 app.use(bodyParser.json());
@@ -108,6 +93,72 @@ app.get('/api/:id', function(req, res){
     }else{
         res.status(404).send();
     }
+
+});
+
+var obj=[];
+var j=1;
+app.post('/insert', function(req, res){
+    var body= _.pick(req.body,  'desc', 'complete')
+
+    body.id=i++;
+
+    obj.push(body);
+    console.log(obj);
+    res.send(obj);
+});
+
+app.get('/select', function (req, res) {
+    // var body = req.body;
+    res.send(obj);
+})
+
+//Delete data
+app.delete('/delete/:id', function(req, res){
+    var toid = parseInt(req.params.id, 10);
+    var matchedTodo = _.findWhere(obj, {id:toid})
+   if(!matchedTodo){
+        res.status(404).json({"error": "Not found!"});
+    }else{
+       obj = _.without(obj, matchedTodo)
+       res.json(matchedTodo)
+   }
+
+
+});
+
+
+
+app.put('/update/:id', function(req, res){
+
+    var todoId = parseInt(req.params.id, 10);
+    var matchedTodo = _.findWhere(obj, {id:todoId});
+
+
+    var body = _.pick(req.body, 'desc', 'complete');
+    var validateAttr={};
+
+    if(!matchedTodo){
+        return res.status(404).send();
+    }
+
+    if(body.hasOwnProperty('complete') && _.isBoolean(body.complete) ){
+        validateAttr.complete= body.complete;
+
+    }else if(body.hasOwnProperty('complete')){
+        return res.status(400).send();
+    }
+        debugger;
+    if(body.hasOwnProperty('desc') && _.isString(body.desc)  && body.desc.length>0){
+        validateAttr.desc= body.desc;
+    }else if(body.hasOwnProperty('desc')){
+        return res.status(400).send();
+    }
+
+
+    _.extend(matchedTodo, validateAttr);
+
+res.json(matchedTodo);
 
 });
 
